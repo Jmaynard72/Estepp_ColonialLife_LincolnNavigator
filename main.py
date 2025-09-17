@@ -95,7 +95,7 @@ def main():
         logging.info(f'Successfuly save data to {filename}')        
 
         # Step 6 Send email notification
-        message = f'Data sucessfully exported to file {filename}'
+        message = f'Data sucessfully exported to file {filename} and uploaded to shared folder {Export_Path}'
         subject = '[SUCCESS] Estepp Colonial Life : Lincoln Navigator Demographics File'
         Email.send_message(Sent_To,subject,message)
     except Exception as e:
