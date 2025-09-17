@@ -6,6 +6,7 @@ import pyodbc
 import logging
 import re 
 import os 
+import shutil
 
 import send_mail as Email 
 
@@ -16,7 +17,7 @@ Serer = 'PSI-SQL'
 Database = 'Millennium'
 Driver = 'ODBC Driver 17 for SQL Server'
 Co_List = '7220,7221'
-Export_Path = '//PSI-SQL/Payroll/James/Estepp-LincolnNavigator'
+Export_Path = 'C:/Users/jmaynard/OneDrive - PAYROLL SOLUTIONS/Shared/Colonial Life/Estepp-Navigator'
 
 # Send notifications to
 Sent_To = 'jmaynard@payrollsolutions.cc'
@@ -42,7 +43,7 @@ def create_export_directory(path: str):
         os.makedirs(path,exist_ok=True)
     except Exception as e:
         logging.error(f'Error creating direcotry {path}: {e}')
-    
+
    
 def main():
     # Get sql formatted list
@@ -80,6 +81,7 @@ def main():
     df.rename(columns=({'city':'City','state':'State','zip':'Zip Code'}),inplace=True)
     df.rename(columns=({'title':'Job Title','cc1':'Department','emailAddress':'Email'}),inplace=True)
     df.rename(columns=({'homePhone':'Phone Number'}),inplace=True)
+    df.rename(columns=({'payFrequency':'Pay Frequency'}),inplace=True)
 
     # Step 4 Drop un-needed columns
     df.drop(columns=['co','cc2','cc3','cc4','cc5'],inplace=True)
@@ -90,7 +92,7 @@ def main():
         filename = f'Estepp_Energy-{today}.csv'
         create_export_directory(Export_Path)
         df.to_csv(Export_Path + '/' + filename,index=False,encoding='utf-8')
-        logging.info(f'Successfuly save data to {filename}')
+        logging.info(f'Successfuly save data to {filename}')        
 
         # Step 6 Send email notification
         message = f'Data sucessfully exported to file {filename}'

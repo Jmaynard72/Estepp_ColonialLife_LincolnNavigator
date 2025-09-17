@@ -18,7 +18,7 @@ SELECT c.co,
 	,e.birthDate
 	,e.sex
 	,e.hireDate
-	,dbo.JDM_GetAnnualSalary(e.co,e.id) AS annualSalary
+	,CASE WHEN r.salary > 0 THEN dbo.JDM_GetAnnualSalary(e.co,e.id) ELSE r.rate END AS annualSalary
 	,e.address1
 	,e.address2
 	,e.city
@@ -32,6 +32,7 @@ SELECT c.co,
 	,ISNULL(d5.name,'') AS cc5
 	,ISNULL(REPLACE(e.emailaddresspersonal,'',NULL),e.emailaddress) AS emailAddress
 	,e.homePhone
+	,e.payFrequency
 FROM cinfo c
 	JOIN einfo e ON c.co=e.co 
 	LEFT OUTER JOIN CDept1 d1 ON e.co=d1.co AND e.cc1=d1.cc1 
@@ -39,9 +40,13 @@ FROM cinfo c
 	LEFT OUTER JOIN CDept3 d3 ON e.co=d3.co AND e.cc3=d3.cc3
 	LEFT OUTER JOIN CDept4 d4 ON e.co=d4.co AND e.cc4=d4.cc4
 	LEFT OUTER JOIN CDept5 d5 ON e.co=d5.co AND e.cc5=d5.cc5
-
+	LEFT OUTER JOIN JDM_MostRecentBasePayRate r ON e.co=r.co AND e.id=r.id
 WHERE (e.empstatus='a' OR (e.empstatus='T' AND DATEDIFF(day,e.termdate,GETDATE()) < 30))
 	
 GO
+
+
+
+
 
 
